@@ -526,26 +526,26 @@
             const langData = translations[currentLang];
             
             // --- DAHA GÖZƏL VƏ NİZAMLI WHATSAPP MESAJI ---
-            let msg = ` *✨YENİ SİFARİŞ (RUSTAMOFF.SITE)* ✨\n`;
-            msg += `━━━━━━━━━━━━━━━━━━━━\n\n`;
+            let msg = ` *YENİ SİFARİŞ (RUSTAMOFF.SITE)* \n`;
+            msg += `━━━━━━━━━━━━━━\n\n`;
             
             cart.forEach((i, index) => {
                 const info = langData.products.find(p => p.id === i.id);
                 const name = info ? info.name : 'Məhsul';
                 const color = info ? info.color : '-';
                 
-                msg += `📌 *Məhsul #${index + 1}:* ${name}\n`;
-                msg += `🎨 *Rəng:* ${color}\n`;
-                msg += `🔢 *Miqdar:* ${i.qty} ədəd\n`;
-                msg += `💰 *Qiymət:* ${i.price.toFixed(2)} ${langData.currency}\n`;
-                msg += `┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈\n`;
+                msg += ` *Məhsul #${index + 1}:* ${name}\n`;
+                msg += ` *Rəng:* ${color}\n`;
+                msg += ` *Miqdar:* ${i.qty} ədəd\n`;
+                msg += ` *Qiymət:* ${i.price.toFixed(2)} ${langData.currency}\n`;
+                msg += `┈┈┈┈┈┈┈┈┈┈┈┈┈\n`;
             });
             
             msg += `\n💵 *ÜMUMİ MƏBLƏĞ:* *${document.getElementById('cart-total-price').innerText}*\n\n`;
-            msg += `🏦 *ÖDƏNİŞ MƏLUMATLARI:* \n`;
-            msg += `💳 *Kart:* \`0000-0000-0000-0000\`\n`;
-            msg += `🏛️ *Bank:* ABB\n\n`;
-            msg += `✅ _Zəhmət olmasa ödəniş etdikdən sonra qəbzi bura göndərin._`;
+            msg += ` *ÖDƏNİŞ MƏLUMATLARI:* \n`;
+            msg += ` *Kart:* \`0000-0000-0000-0000\`\n`;
+            msg += ` *Bank:* ABB\n\n`;
+            msg += ` _Zəhmət olmasa ödəniş etdikdən sonra qəbzi bura göndərin._`;
             
             window.open(`https://wa.me/994773313327?text=${encodeURIComponent(msg)}`);
         }
