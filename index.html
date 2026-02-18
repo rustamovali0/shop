@@ -1,0 +1,573 @@
+     --text-secondary: #a0a0a0;
+            --accent-color: #ffffff;
+            --border-color: #262626;
+            --header-bg: rgba(10, 10, 10, 0.8);
+            --transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        [data-theme="light"] {
+            --bg-color: #f5f5f7;
+            --surface-color: #ffffff;
+            --surface-hover: #fafafa;
+            --text-primary: #1d1d1f;
+            --text-secondary: #6e6e73;
+            --accent-color: #000000;
+  <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SHOP.RUSTAMOFF.SITE</title>
+    <style>
+        /* Rustamoff Design System */
+        :root {
+            --bg-color: #0a0a0a;
+            --surface-color: #161616;
+            --surface-hover: #1c1c1c;
+            --text-primary: #ffffff;
+                 --border-color: #d2d2d7;
+            --header-bg: rgba(245, 245, 247, 0.8);
+        }
+
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: var(--bg-color); }
+        ::-webkit-scrollbar-thumb { background: #222; border-radius: 10px; }
+        
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-primary);
+            transition: background-color 0.4s ease, color 0.4s ease;
+            overflow-x: hidden;
+        }
+
+        /* --- LOADER --- */
+        #loader {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: #000; display: flex; flex-direction: column;
+            justify-content: center; align-items: center; z-index: 9999;
+            transition: transform 1s cubic-bezier(1, 0, 0, 1);
+        }
+        .loader-logo {
+            font-size: 2.5rem; font-weight: 900; letter-spacing: 12px; color: #fff;
+            animation: glitch 500ms infinite;
+        }
+        .progress-container { width: 200px; height: 2px; background: rgba(255,255,255,0.1); margin-top: 30px; position: relative; }
+        .progress-bar { position: absolute; height: 100%; background: #fff; width: 0%; transition: width 0.3s; }
+        #loader.hidden { transform: translateY(-100%); pointer-events: none; }
+
+        @keyframes glitch {
+            0% { text-shadow: 2px 0 red, -2px -1px green; }
+            50% { text-shadow: -2px 0 blue, 2px 1px red; }
+            100% { text-shadow: 1px -1px green, -1px 2px blue; }
+        }
+
+        /* --- HEADER --- */
+        header {
+            padding: 15px 5%; display: flex; justify-content: space-between; align-items: center;
+            border-bottom: 1px solid var(--border-color); position: sticky; top: 0;
+            background: var(--header-bg); backdrop-filter: blur(20px); z-index: 1000;
+        }
+        
+        .nav-controls { display: flex; align-items: center; gap: 24px; }
+        
+        .lang-switcher {
+            display: flex;
+            gap: 10px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            letter-spacing: 1px;
+        }
+        .lang-btn {
+            cursor: pointer;
+            opacity: 0.3;
+            transition: opacity 0.3s ease;
+            text-transform: uppercase;
+        }
+        .lang-btn.active { opacity: 1; }
+
+        /* --- MAIN --- */
+        main { max-width: 1400px; margin: 40px auto; padding: 0 5%; }
+        .section-title { font-size: 2.5rem; font-weight: 900; text-align: center; margin-bottom: 50px; }
+
+        .product-grid { 
+            display: grid; 
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); 
+            gap: 30px; 
+            align-items: stretch;
+        }
+
+        .reveal {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+        }
+        .reveal.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .product-card {
+            background: var(--surface-color); 
+            border-radius: 20px; 
+            padding: 20px;
+            transition: var(--transition); 
+            border: 1px solid transparent;
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+        }
+
+        .product-card:hover { transform: translateY(-10px); border-color: var(--border-color); }
+
+        .product-image-wrapper {
+            width: 100%;
+            aspect-ratio: 1 / 1;
+            overflow: hidden;
+            border-radius: 12px;
+            margin-bottom: 15px;
+            background: #000;
+            cursor: zoom-in;
+        }
+
+        .product-image { 
+            width: 100%; 
+            height: 100%; 
+            object-fit: cover;
+            display: block;
+            transition: transform 0.5s ease;
+        }
+        
+        .product-card:hover .product-image {
+            transform: scale(1.05);
+        }
+        
+        .product-content {
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .btn-add {
+            width: 100%; 
+            padding: 14px; 
+            background: var(--text-primary); 
+            color: var(--bg-color);
+            border: none; 
+            border-radius: 12px; 
+            font-weight: 800; 
+            cursor: pointer; 
+            margin-top: auto;
+            transition: opacity 0.2s ease;
+        }
+        .btn-add:active { opacity: 0.8; }
+
+        /* --- CART --- */
+        #cart-sidebar {
+            position: fixed; right: -100%; top: 0; width: 400px; height: 100%;
+            background: var(--surface-color); z-index: 2000; transition: var(--transition);
+            padding: 30px; display: flex; flex-direction: column;
+            box-shadow: -10px 0 30px rgba(0,0,0,0.5);
+        }
+        #cart-sidebar.open { right: 0; }
+
+        .floating-cart {
+            position: fixed; bottom: 30px; right: 30px; width: 60px; height: 60px;
+            background: var(--text-primary); color: var(--bg-color); border-radius: 50%;
+            display: flex; align-items: center; justify-content: center; cursor: pointer; z-index: 999;
+        }
+        .badge { 
+            position: absolute; 
+            top: -5px; 
+            right: -5px; 
+            background: #ff3b30; 
+            color: #fff; 
+            min-width: 22px;
+            height: 22px;
+            display: none; 
+            align-items: center;
+            justify-content: center;
+            border-radius: 11px; 
+            font-size: 11px; 
+            font-weight: 900;
+            border: 2px solid var(--bg-color);
+            transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        .badge.pop { display: flex; transform: scale(1.3); }
+
+        /* --- LIGHTBOX --- */
+        #lightbox {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.95); z-index: 3000; display: none;
+            justify-content: center; align-items: center; cursor: zoom-out;
+            backdrop-filter: blur(10px);
+        }
+        #lightbox img {
+            max-width: 90%; max-height: 90%; border-radius: 15px;
+            transform: scale(0.8); transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        #lightbox.active { display: flex; }
+        #lightbox.active img { transform: scale(1); }
+
+        @media (max-width: 600px) { 
+            #cart-sidebar { width: 100%; }
+            .product-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body data-theme="dark">
+
+    <div id="loader">
+        <div class="loader-logo">RUSTAMOFF</div>
+        <div class="progress-container"><div class="progress-bar" id="load-bar"></div></div>
+    </div>
+
+    <!-- Image Lightbox -->
+    <div id="lightbox" onclick="closeLightbox()">
+        <img id="lightbox-img" src="" alt="Zoomed Product">
+    </div>
+
+    <header>
+        <div class="logo-container" style="font-weight:900; letter-spacing:2px;">RUSTAMOFF<span style="opacity:0.5">.SITE</span></div>
+        <div class="nav-controls">
+            <div class="lang-switcher">
+                <span id="lang-en" class="lang-btn active" onclick="setLanguage('en')">EN</span>
+                <span style="opacity:0.2">|</span>
+                <span id="lang-az" class="lang-btn" onclick="setLanguage('az')">AZ</span>
+            </div>
+            
+            <button id="theme-toggle" style="background:none; border:none; color:inherit; cursor:pointer; display: flex; align-items: center; justify-content: center; padding: 4px;">
+                <svg id="theme-icon" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="overflow: visible;">
+                    <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+                </svg>
+            </button>
+        </div>
+    </header>
+
+    <main>
+        <h2 id="ui-new-season" class="section-title">NEW SEASON</h2>
+        <div class="product-grid" id="product-list"></div>
+    </main>
+
+    <div class="floating-cart" id="floating-cart-btn" onclick="event.stopPropagation(); toggleCart();">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4H6zM3 6h18M16 10a4 4 0 01-8 0"/></svg>
+        <span class="badge" id="cart-count">0</span>
+    </div>
+
+    <div id="cart-sidebar">
+        <div style="display:flex; justify-content:space-between; margin-bottom:30px;">
+            <h3 id="ui-cart-title" style="letter-spacing: 2px;">YOUR CART</h3>
+            <button onclick="toggleCart()" style="background:none; border:none; color:inherit; cursor:pointer; font-size:20px;">✕</button>
+        </div>
+        <div id="cart-items" style="flex:1; overflow-y:auto;"></div>
+        <div style="border-top:1px solid var(--border-color); padding-top:20px;">
+            <div style="display:flex; justify-content:space-between; font-weight:900; margin-bottom:20px;">
+                <span id="ui-total">TOTAL</span>
+                <span id="cart-total-price">0 AZN</span>
+            </div>
+            <button onclick="checkout()" id="ui-checkout-btn" style="width:100%; padding:18px; background:#25d366; color:white; border:none; border-radius:12px; font-weight:900; cursor:pointer; letter-spacing: 1px;">CHECKOUT VIA WHATSAPP</button>
+        </div>
+    </div>
+
+    <script>
+        const translations = {
+            en: {
+                newSeason: "NEW SEASON",
+                cartTitle: "YOUR CART",
+                total: "TOTAL",
+                checkout: "CHECKOUT VIA WHATSAPP",
+                add: "ADD TO CART",
+                currency: "AZN",
+                products: [
+                    { id: 1, name: "Premium Hoodie", color: "Anthracite" },
+                    { id: 2, name: "Urban Tech T-Shirt", color: "Off-White" },
+                    { id: 3, name: "Midnight Cargo", color: "Black" },
+                    { id: 4, name: "Retro Sneakers", color: "Vintage" },
+                    { id: 5, name: "Wool Beanie", color: "Forest" },
+                    { id: 6, name: "Leather Belt", color: "Tan" },
+                    { id: 7, name: "Denim Jacket", color: "Indigo" },
+                    { id: 8, name: "Sunglasses", color: "Matte Black" },
+                    { id: 9, name: "Everyday Backpack", color: "Coal" },
+                    { id: 10, name: "Steel Watch", color: "Silver" }
+                ]
+            },
+            az: {
+                newSeason: "YENİ MÖVSÜM",
+                cartTitle: "SƏBƏTİNİZ",
+                total: "CƏMİ",
+                checkout: "WHATSAPP İLƏ SİFARİŞ",
+                add: "SƏBƏTƏ AT",
+                currency: "AZN",
+                products: [
+                    { id: 1, name: "Premium Hudi", color: "Antrasit" },
+                    { id: 2, name: "Urban Tex Köynək", color: "Ağ" },
+                    { id: 3, name: "Gecə Karqo Şalvar", color: "Qara" },
+                    { id: 4, name: "Retro Kedlər", color: "Vintaj" },
+                    { id: 5, name: "Yun Papaq", color: "Yaşıl" },
+                    { id: 6, name: "Dəri Kəmər", color: "Qəhvəyi" },
+                    { id: 7, name: "Denim Gödəkçə", color: "İndiqo" },
+                    { id: 8, name: "Günəş Eynəyi", color: "Mat Qara" },
+                    { id: 9, name: "Gündəlik Çanta", color: "Kömür" },
+                    { id: 10, name: "Polad Saat", color: "Gümüşü" }
+                ]
+            }
+        };
+
+        const baseProducts = [
+            { id: 1, price: 85, image: "https://images.unsplash.com/photo-1556821840-3a63f95609a7?q=80&w=800&auto=format&fit=crop" },
+            { id: 2, price: 45, image: "https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?q=80&w=800&auto=format&fit=crop" },
+            { id: 3, price: 110, image: "https://images.unsplash.com/photo-1620799140408-edc6dcb6d633?q=80&w=800&auto=format&fit=crop" },
+            { id: 4, price: 160, image: "https://images.unsplash.com/photo-1582588625263-3e8c92742964?q=80&w=800&auto=format&fit=crop" },
+            { id: 5, price: 25, image: "https://images.unsplash.com/photo-1576871337622-98d48d1cf531?q=80&w=800&auto=format&fit=crop" },
+            { id: 6, price: 35, image: "https://images.unsplash.com/photo-1614165936161-44f195aff332?q=80&w=800&auto=format&fit=crop" },
+            { id: 7, price: 135, image: "https://images.unsplash.com/photo-1578932750294-f5075e85f44a?q=80&w=800&auto=format&fit=crop" },
+            { id: 8, price: 65, image: "https://images.unsplash.com/photo-1511499767390-a73359580bc1?q=80&w=800&auto=format&fit=crop" },
+            { id: 9, price: 95, image: "https://images.unsplash.com/photo-1553062407-98eeb64c6a62?q=80&w=800&auto=format&fit=crop" },
+            { id: 10, price: 290, image: "https://images.unsplash.com/photo-1523275335684-37898b6baf30?q=80&w=800&auto=format&fit=crop" }
+        ];
+
+        let currentLang = 'en';
+        let cart = [];
+
+        // --- LOCAL STORAGE LOGIC ---
+        function saveCart() {
+            localStorage.setItem('rustamoff_cart_v2', JSON.stringify(cart));
+        }
+
+        function loadCart() {
+            try {
+                const saved = localStorage.getItem('rustamoff_cart_v2');
+                if (saved) {
+                    cart = JSON.parse(saved);
+                }
+            } catch (e) {
+                console.error("Cart load error", e);
+            }
+            renderCart();
+        }
+
+        function saveTheme(theme) {
+            localStorage.setItem('rustamoff_theme', theme);
+        }
+
+        function loadTheme() {
+            const savedTheme = localStorage.getItem('rustamoff_theme') || 'dark';
+            document.body.setAttribute('data-theme', savedTheme);
+            updateThemeIcon(savedTheme === 'dark');
+        }
+
+        // --- LIGHTBOX LOGIC ---
+        function openLightbox(src) {
+            const lb = document.getElementById('lightbox');
+            const img = document.getElementById('lightbox-img');
+            img.src = src;
+            lb.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeLightbox() {
+            document.getElementById('lightbox').classList.remove('active');
+            document.body.style.overflow = 'auto';
+        }
+
+        // --- ANIMATION OBSERVER ---
+        const observerOptions = { threshold: 0.1 };
+        const revealObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) entry.target.classList.add('active');
+            });
+        }, observerOptions);
+
+        function initScrollReveal() {
+            document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
+        }
+
+        // --- THEME LOGIC ---
+        function updateThemeIcon(isDark) {
+            document.getElementById('theme-icon').innerHTML = !isDark 
+                ? '<circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>'
+                : '<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>';
+        }
+
+        document.getElementById('theme-toggle').onclick = () => {
+            const isDark = document.body.getAttribute('data-theme') === 'dark';
+            const newTheme = isDark ? 'light' : 'dark';
+            document.body.setAttribute('data-theme', newTheme);
+            saveTheme(newTheme);
+            updateThemeIcon(newTheme === 'dark');
+        };
+
+        // --- LANGUAGE LOGIC ---
+        function setLanguage(lang) {
+            currentLang = lang;
+            document.getElementById('lang-en').classList.toggle('active', lang === 'en');
+            document.getElementById('lang-az').classList.toggle('active', lang === 'az');
+            updateUI();
+        }
+
+        function updateUI() {
+            const langData = translations[currentLang];
+            document.getElementById('ui-new-season').innerText = langData.newSeason;
+            document.getElementById('ui-cart-title').innerText = langData.cartTitle;
+            document.getElementById('ui-total').innerText = langData.total;
+            document.getElementById('ui-checkout-btn').innerText = langData.checkout;
+            
+            renderProducts();
+            renderCart(); 
+        }
+
+        function renderProducts() {
+            const list = document.getElementById('product-list');
+            const langData = translations[currentLang];
+            
+            list.innerHTML = baseProducts.map((p, idx) => {
+                const info = langData.products[idx];
+                return `
+                    <div class="product-card reveal">
+                        <div class="product-image-wrapper" onclick="openLightbox('${p.image}')">
+                            <img src="${p.image}" class="product-image" onerror="this.src='https://placehold.co/400x400/161616/white?text=Img'">
+                        </div>
+                        <div class="product-content">
+                            <div style="font-size:11px; color:var(--text-secondary); text-transform:uppercase; letter-spacing:1.5px; font-weight:600;">${info.color}</div>
+                            <div style="font-weight:700; font-size:18px; margin: 4px 0;">${info.name}</div>
+                            <div style="font-weight:900; font-size:20px; color:var(--text-primary); margin-bottom:15px;">${p.price.toFixed(2)} ${langData.currency}</div>
+                            <button class="btn-add" onclick="event.stopPropagation(); addToCart(${p.id})">${langData.add}</button>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+            
+            initScrollReveal();
+        }
+
+        // --- CART LOGIC ---
+        function addToCart(id) {
+            const product = baseProducts.find(p => p.id === id);
+            const inCart = cart.find(item => item.id === id);
+            
+            if(inCart) {
+                inCart.qty++;
+            } else {
+                cart.push({...product, qty: 1});
+            }
+            
+            saveCart();
+            renderCart();
+            
+            const badge = document.getElementById('cart-count');
+            badge.classList.remove('pop');
+            void badge.offsetWidth;
+            badge.classList.add('pop');
+
+            if(!document.getElementById('cart-sidebar').classList.contains('open')) toggleCart();
+        }
+
+        function renderCart() {
+            const container = document.getElementById('cart-items');
+            const badge = document.getElementById('cart-count');
+            const langData = translations[currentLang];
+            let total = 0, count = 0;
+
+            if (cart.length === 0) {
+                container.innerHTML = `<div style="text-align:center; opacity:0.5; margin-top:50px;">Səbət boşdur</div>`;
+                badge.style.display = 'none';
+            } else {
+                badge.style.display = 'flex';
+                container.innerHTML = cart.map(item => {
+                    const infoCurrent = langData.products.find(p => p.id === item.id);
+                    const displayName = infoCurrent ? infoCurrent.name : 'Product';
+                    
+                    total += item.price * item.qty;
+                    count += item.qty;
+                    return `
+                        <div style="display:flex; gap:15px; margin-bottom:20px; align-items:center;">
+                            <img src="${item.image}" style="width:60px; height:60px; border-radius:10px; object-fit:cover;" onerror="this.src='https://placehold.co/100x100/161616/white?text=Img'">
+                            <div style="flex:1;">
+                                <div style="font-weight:700; font-size:14px;">${displayName}</div>
+                                <div style="font-size:12px; opacity:0.7;">${item.qty} x ${item.price.toFixed(2)} ${langData.currency}</div>
+                            </div>
+                            <div style="display:flex; align-items:center; gap:8px;">
+                                <button onclick="updateQty(${item.id}, -1)" style="background:var(--border-color); border:none; color:white; width:24px; height:24px; border-radius:5px; cursor:pointer;">-</button>
+                                <span style="font-size:14px; font-weight:700;">${item.qty}</span>
+                                <button onclick="updateQty(${item.id}, 1)" style="background:var(--border-color); border:none; color:white; width:24px; height:24px; border-radius:5px; cursor:pointer;">+</button>
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+            }
+
+            document.getElementById('cart-total-price').innerText = total.toFixed(2) + " " + langData.currency;
+            badge.innerText = count;
+        }
+
+        function updateQty(id, delta) {
+            const item = cart.find(i => i.id === id);
+            if(item) {
+                item.qty += delta;
+                if(item.qty <= 0) cart = cart.filter(i => i.id !== id);
+                saveCart();
+                renderCart();
+            }
+        }
+
+        function toggleCart() {
+            document.getElementById('cart-sidebar').classList.toggle('open');
+        }
+
+        const cartSidebar = document.getElementById('cart-sidebar');
+        cartSidebar.onclick = (e) => e.stopPropagation();
+        document.onclick = (e) => {
+            if (cartSidebar.classList.contains('open')) toggleCart();
+        };
+
+        function checkout() {
+            if(cart.length === 0) return;
+            const langData = translations[currentLang];
+            
+            // --- DAHA GÖZƏL VƏ NİZAMLI WHATSAPP MESAJI ---
+            let msg = `✨ *YENİ SİFARİŞ (RUSTAMOFF.SITE)* ✨\n`;
+            msg += `━━━━━━━━━━━━━━━━━━━━\n\n`;
+            
+            cart.forEach((i, index) => {
+                const info = langData.products.find(p => p.id === i.id);
+                const name = info ? info.name : 'Məhsul';
+                const color = info ? info.color : '-';
+                
+                msg += `📌 *Məhsul #${index + 1}:* ${name}\n`;
+                msg += `🎨 *Rəng:* ${color}\n`;
+                msg += `🔢 *Miqdar:* ${i.qty} ədəd\n`;
+                msg += `💰 *Qiymət:* ${i.price.toFixed(2)} ${langData.currency}\n`;
+                msg += `┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈\n`;
+            });
+            
+            msg += `\n💵 *ÜMUMİ MƏBLƏĞ:* *${document.getElementById('cart-total-price').innerText}*\n\n`;
+            msg += `🏦 *ÖDƏNİŞ MƏLUMATLARI:* \n`;
+            msg += `💳 *Kart:* \`0000-0000-0000-0000\`\n`;
+            msg += `🏛️ *Bank:* ABB\n\n`;
+            msg += `✅ _Zəhmət olmasa ödəniş etdikdən sonra qəbzi bura göndərin._`;
+            
+            window.open(`https://wa.me/994773313327?text=${encodeURIComponent(msg)}`);
+        }
+
+        // --- INITIALIZATION ---
+        window.addEventListener('load', () => {
+            const bar = document.getElementById('load-bar');
+            let p = 0;
+            const int = setInterval(() => {
+                p += 10;
+                bar.style.width = p + "%";
+                if(p >= 100) {
+                    clearInterval(int);
+                    setTimeout(() => {
+                        document.getElementById('loader').classList.add('hidden');
+                        loadTheme();
+                        loadCart(); 
+                        updateUI(); 
+                    }, 300);
+                }
+            }, 30);
+        });
+    </script>
+</body>
+</html>
